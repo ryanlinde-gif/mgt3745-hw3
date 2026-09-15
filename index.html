@@ -3,25 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Meeting notes | MGT 3745 starter</title>
+  <title>Coach contact log | Recruiting Reality Check</title>
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
 <body>
   <main>
-    <h1>Meeting notes</h1>
-    <p>Keep short notes in this browser. Use fictional, non-sensitive information.</p>
-    <form id="note-form" novalidate>
-      <label for="note-input">New note</label>
-      <p id="note-help">Enter 1–200 characters. Notes stay in this browser profile and site only.</p>
-      <input id="note-input" name="note" type="text" aria-describedby="note-help note-error" autocomplete="off">
-      <button type="submit">Save note</button>
-      <p id="note-error" role="alert"></p>
+    <h1>Coach contact log</h1>
+    <p>Record which college coaches you have emailed and where each one stands.
+       Entries are saved in this browser only. Use fictional, non-sensitive information.</p>
+
+    <form id="contact-form" novalidate>
+      <label for="coach-name-input">Coach name</label>
+      <input id="coach-name-input" name="coachName" type="text"
+             aria-describedby="entry-error" autocomplete="off">
+
+      <label for="school-input">School</label>
+      <input id="school-input" name="school" type="text"
+             aria-describedby="entry-error" autocomplete="off">
+
+      <label for="contact-date-input">Date contacted</label>
+      <input id="contact-date-input" name="contactDate" type="date"
+             aria-describedby="entry-error">
+
+      <label for="status-select">Status</label>
+      <select id="status-select" name="status" aria-describedby="status-help">
+        <option value="awaiting reply">Awaiting reply</option>
+        <option value="replied">Replied</option>
+        <option value="no longer pursuing">No longer pursuing</option>
+      </select>
+      <p id="status-help">Entries awaiting a reply for 7 or more days are flagged for follow-up.</p>
+
+      <button type="submit">Save contact</button>
+      <p id="entry-error" role="alert"></p>
     </form>
+
     <p id="save-status" role="status" aria-live="polite"></p>
-    <h2>Saved notes</h2>
-    <p id="empty-state">No saved notes yet.</p>
-    <ul id="note-list" aria-label="Saved notes"></ul>
+
+    <h2>Saved contacts</h2>
+    <p id="empty-state">No coaches logged yet.</p>
+    <ul id="contact-list" aria-label="Saved coach contacts"></ul>
   </main>
 </body>
 </html>
