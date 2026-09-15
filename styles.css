@@ -1,0 +1,14 @@
+:root { font-family: Arial, Helvetica, sans-serif; color: #172b40; background: #f7f9fb; }
+body { margin: 0; }
+main { max-width: 44rem; margin: 2rem auto; padding: 0 1.25rem; }
+h1 { font-size: 2rem; }
+p { line-height: 1.5; }
+label { display: block; font-weight: 700; }
+input { box-sizing: border-box; display: block; width: 100%; font: inherit; padding: 0.8rem; border: 1px solid #526578; border-radius: 0.3rem; }
+button { min-height: 44px; margin: 0.75rem 0; padding: 0.6rem 1rem; font: inherit; background: #123552; color: #fff; border: 2px solid #123552; border-radius: 0.3rem; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid #b16d00; outline-offset: 3px; }
+input[aria-invalid="true"] { border: 2px solid #a02020; }
+#note-error { color: #922020; }
+#note-list { padding: 0; list-style: none; }
+#note-list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; border-bottom: 1px solid #b8c5d0; }
+#note-list span { flex: 1 1 15rem; overflow-wrap: anywhere; line-height: 1.5; }

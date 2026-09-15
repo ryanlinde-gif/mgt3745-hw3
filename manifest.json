@@ -1,0 +1,79 @@
+{
+  "version": "6.17",
+  "canonicalContextCount": 11,
+  "hw3ActiveContextCount": 6,
+  "hw3PreviewContextCount": 5,
+  "rootEntry": "README.md",
+  "toolAdapters": [
+    "CLAUDE.md",
+    ".github/copilot-instructions.md"
+  ],
+  "files": [
+    {
+      "path": "context/PROJECT.md",
+      "activationModule": 3,
+      "hw3Status": "active",
+      "purpose": "Problem framing and bounded project scope"
+    },
+    {
+      "path": "context/USERS.md",
+      "activationModule": 2,
+      "hw3Status": "active",
+      "purpose": "Copy HW2 research; label reported, observed, inferred evidence"
+    },
+    {
+      "path": "context/FEATURES.md",
+      "activationModule": 2,
+      "hw3Status": "active",
+      "purpose": "Copy HW2 spec and Kano hypotheses; record chosen scope and verification"
+    },
+    {
+      "path": "context/STANDARDS.md",
+      "activationModule": 3,
+      "hw3Status": "active",
+      "purpose": "At least five normative rules for code and documentation"
+    },
+    {
+      "path": "context/ARCHITECTURE.md",
+      "activationModule": 3,
+      "hw3Status": "active",
+      "purpose": "Weighted Gate, ADR, sensitivity, and revisit trigger"
+    },
+    {
+      "path": "context/CLAUDE.md",
+      "activationModule": 3,
+      "hw3Status": "active",
+      "purpose": "Same standards as agent instructions; canonical course document"
+    },
+    {
+      "path": "context/STYLE.md",
+      "activationModule": 4,
+      "hw3Status": "preview",
+      "purpose": "Visual and voice standards and design rationale"
+    },
+    {
+      "path": "context/TOOLS.md",
+      "activationModule": 4,
+      "hw3Status": "preview",
+      "purpose": "External services, data crossings, and trust boundaries"
+    },
+    {
+      "path": "context/SKILLS.md",
+      "activationModule": 5,
+      "hw3Status": "preview",
+      "purpose": "Capabilities you can attest to and evaluated dependencies"
+    },
+    {
+      "path": "context/EVALS.md",
+      "activationModule": 5,
+      "hw3Status": "preview",
+      "purpose": "RAT, success criteria, error analysis, code and judgment evals"
+    },
+    {
+      "path": "context/AGENTS.md",
+      "activationModule": 6,
+      "hw3Status": "preview",
+      "purpose": "Role-specific agent responsibilities and review constraints"
+    }
+  ]
+}

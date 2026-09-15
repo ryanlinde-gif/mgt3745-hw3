@@ -1,0 +1,7 @@
+{
+  "name": "MGT 3745 HW3 v6.17",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "forwardPorts": [5500],
+  "portsAttributes": {"5500": {"label": "HW3 application", "onAutoForward": "notify"}},
+  "customizations": {"vscode": {"extensions": ["ritwickdey.LiveServer", "GitHub.copilot", "GitHub.copilot-chat"]}}
+}
