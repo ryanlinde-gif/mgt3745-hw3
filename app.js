@@ -15,7 +15,7 @@
   const contactList = document.querySelector('#contact-list');
   const entryError = document.querySelector('#entry-error');
   const saveStatus = document.querySelector('#save-status');
-  const emptyState = document.querySelector('#empty-state');
+  const emptyState = document.querySelector('#empty-state');const overdueCount = document.querySelector('#overdue-count');
 
   // The query switch enables a repeatable classroom failure without filling real storage.
   const simulateFailedSave = new URLSearchParams(window.location.search).has('failSave');
@@ -105,6 +105,14 @@
   function renderContactLog() {
     contactList.replaceChildren();
     emptyState.hidden = contactEntries.length > 0;
+    const overdueEntries = contactEntries.filter(isOverdue);
+    if (overdueEntries.length === 0) {
+      overdueCount.textContent = '';
+    } else if (overdueEntries.length === 1) {
+      overdueCount.textContent = '1 contact due for follow-up.';
+    } else {
+      overdueCount.textContent = `${overdueEntries.length} contacts due for follow-up.`;
+    }
 
     contactEntries.forEach((entry, index) => {
       const listItem = document.createElement('li');
