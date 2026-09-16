@@ -20,18 +20,29 @@ verification run are in [FEATURES.md](context/FEATURES.md).
 
 ## See It Work
 
-![Coach contact log showing three saved entries. M. Chen at Furman University, contacted 2026-09-07, carries an orange badge reading "Due for follow-up (8 days)". A bold line above the list reads "1 contact due for follow-up." The entries for A. Rivera and T. Okafor, contacted more recently, carry no badge.](docs/contact-log.png)
+![Coach contact log with three saved entries. Above the list, a bold line reads "1 contact due for follow-up." M. Chen at Furman University, contacted 2026-09-07, carries an orange badge reading "Due for follow-up (8 days)". A. Rivera contacted 2026-09-15 and T. Okafor contacted 2026-09-09 carry no badge. The entry form above is empty.](docs/contact-log.png)
 
-This image demonstrates **E13**: *WHILE an entry's status is "awaiting reply" and
-7 or more days have passed since its contact date, THE SYSTEM SHALL mark that
-entry as due for follow-up.* Three entries are saved. Only the eight-day-old one
-is flagged. The six-day-old entry is deliberately present to show the threshold
-fires at seven days and not before, which a single flagged row could not prove.
+This demonstrates **E13**: *WHILE an entry's status is "awaiting reply" and 7 or
+more days have passed since its contact date, THE SYSTEM SHALL mark that entry as
+due for follow-up.* Three entries are saved and only the eight-day-old one is
+flagged. The six-day-old entry is deliberately in frame, because a single flagged
+row would show the badge working without showing the threshold working. The
+follow-up count above the list is the change described under Explain, Change,
+Verify.
 
-A screenshot cannot establish reload or storage-failure behavior. Those are
-recorded as observed results in the [verification
-table](context/FEATURES.md#verification), covering a page reload and a simulated
-write failure.
+![The same contact log with ?failSave appended to the URL. A red message reads "Could not save. Your entry is still here. Try again when storage is available." The form still contains K. Alvarez, Wofford College, and 09/14/2026. The list below is unchanged at three entries and does not include K. Alvarez.](docs/contact-log-failsave.png)
+
+This demonstrates **E14**: *IF the write to storage fails, THEN THE SYSTEM SHALL
+report the failure and leave the athlete's typed input in the form.* The `?failSave`
+switch ships with the course starter and forces every write to throw. Three things
+are visible at once: the error, the form still holding all three typed values, and
+the list unchanged at three entries with no K. Alvarez added. That combination is
+the argument in `saveContacts` made visible, and it is why the save is attempted
+before anything on screen changes.
+
+A still image cannot establish reload behavior, since persistence is only
+meaningful across a page load. E11 is recorded as an observed result in the
+[verification table](context/FEATURES.md#verification) instead.
 
 ## How to Run
 
@@ -90,7 +101,7 @@ typed input untouched.
 | Save and display | Works | E10 and E5 observed in the [verification table](context/FEATURES.md#verification), commit `015a50f` |
 | Invalid input | Works | E12 empty-field case observed; the 201-character boundary is recorded CANNOT TEST because it was not re-run in the Codespace |
 | Data survives reload | Works | E11 observed: three entries returned in order after a reload, with the overdue flag recomputed on load |
-| Storage write failure | Works | E14 observed under `?failSave`: error shown, list unchanged, all typed input preserved |
+| Storage write failure | Works | E14 observed under `?failSave`: error shown, list unchanged, all typed input preserved. See `docs/contact-log-failsave.png` |
 | Follow-up threshold | Works | E13 observed at both 8 days (flagged) and 6 days (not flagged) |
 | Multi-user sync | Deferred | localStorage is per-browser and per-device, so the parent cannot see the log at all. Named as a defect, not a rough edge, in [ADR-001](context/ARCHITECTURE.md) |
 
