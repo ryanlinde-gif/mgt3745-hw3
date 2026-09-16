@@ -130,7 +130,8 @@ remembered. ADR-001's revisit trigger covers the same event.
 
 ## Colleague Test
 
-**Who read it:** NAME_PLACEHOLDER
+**Who read it:** Luke, my roommate. He had not seen this repository or any
+part of the project before reading `CLAUDE.md`, so the read was cold.
 
 **The one thing they misunderstood or asked about.** They described the three-file
 separation as a permanent rule and did not register that it expires. The File
