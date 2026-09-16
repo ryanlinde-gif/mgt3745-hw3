@@ -1,87 +1,120 @@
-# [Project Name]
+# Coach Contact Log
 
-<!-- Badges are optional but cheap. shields.io generates them from a URL. -->
-![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+![Status](https://img.shields.io/badge/status-verified-2e7d32)
 ![Module](https://img.shields.io/badge/MGT%203745-HW3-051E39)
-
-> HW3, MGT 3745 O. Replace every [bracketed prompt] with your own writing.
-> Lines between `<!--` and `-->` are notes to you. They are invisible on GitHub. Delete them when done.
-> This README is the first thing an employer, a teammate, or an agent reads. It makes
-> a case for the repository. Show, then tell.
 
 ## What
 
-Replace this title and paragraph with your chosen feature and link [PROJECT.md](context/PROJECT.md) and [FEATURES.md](context/FEATURES.md). This runnable "meeting notes" application is a teaching starter, not a completed student submission. Adapt it to your researched feature and make a meaningful change you can explain.
+A high school soccer player records which college coaches she has emailed, at
+which school, on what date, and where each one stands, and the log flags any
+coach who has been sitting unanswered for seven days or more. The problem it
+serves is in [PROJECT.md](context/PROJECT.md): families cannot tell what
+recruiting help is worth before they are asked to pay for it. The narrower
+problem it actually solves comes from an interview recorded in
+[USERS.md](context/USERS.md), where the athlete described telling herself to
+follow up and then forgetting which coaches she owed an email, because practice
+or school got in the way. That is a memory failure, not a motivation failure, so
+the fix is a record rather than a reminder. The full specification, the Kano
+classification that selected this feature out of eight candidates, and the
+verification run are in [FEATURES.md](context/FEATURES.md).
 
 ## See It Work
 
-<!-- REQUIRED: at least one image or GIF of the feature meeting an EARS statement.
-     Put media in the docs/ folder. Keep GIFs under 5 MB.
-     Record: macOS Cmd+Shift+5, Windows Win+Alt+R or Snipping Tool video. Convert at ezgif.com.
-     Markdown image syntax: -->
-Put a screenshot or GIF under docs/ and link it here with descriptive alt text. Explain which acceptance criterion it demonstrates.
-![Saving an entry and seeing it appear in the list](docs/demo.gif)
+![Coach contact log showing three saved entries. M. Chen at Furman University, contacted 2026-09-07, carries an orange badge reading "Due for follow-up (8 days)". A bold line above the list reads "1 contact due for follow-up." The entries for A. Rivera and T. Okafor, contacted more recently, carry no badge.](docs/contact-log.png)
 
-<!-- HTML gives you sizing control markdown does not: -->
-<!-- <img src="docs/screenshot.png" width="480" alt="The entry list after three saves"> -->
+This image demonstrates **E13**: *WHILE an entry's status is "awaiting reply" and
+7 or more days have passed since its contact date, THE SYSTEM SHALL mark that
+entry as due for follow-up.* Three entries are saved. Only the eight-day-old one
+is flagged. The six-day-old entry is deliberately present to show the threshold
+fires at seven days and not before, which a single flagged row could not prove.
+
+A screenshot cannot establish reload or storage-failure behavior. Those are
+recorded as observed results in the [verification
+table](context/FEATURES.md#verification), covering a page reload and a simulated
+write failure.
 
 ## How to Run
 
-Create your repository from the this HW3 template and name it `mgt3745-hw3`. The supplied app is a starter; adapt it to one feature from your own specification.
 This project runs inside a GitHub Codespace. No local install.
 
-1. On your repository page, click **Code → Codespaces → Create codespace on main**. Wait for setup to finish; first-boot time varies.
-2. Keep the supplied `.devcontainer/devcontainer.json`. It configures Live Server installation and port 5500 forwarding. Once the extension is ready, right-click `index.html` and choose **Open with Live Server**, or use **Go Live**.
-3. If a browser tab does not open, use the **Ports** tab to open port 5500. Keep its visibility **Private**.
-4. With Live Server running, save your edits to reload the page.
+1. On the repository page, click **Code → Codespaces → Create codespace on main**.
+   Wait for first-boot setup to finish.
+2. Keep the supplied `.devcontainer/devcontainer.json`. It installs Live Server
+   and forwards port 5500. Once the extension finishes installing, right-click
+   `index.html` and choose **Open with Live Server**, or use **Go Live**.
+3. If no browser tab opens, use the **Ports** tab to open port 5500. Keep its
+   visibility **Private**.
+4. Saving an edit reloads the page. If you change `app.js` and the behavior does
+   not change, hard-reload the browser tab to clear the cached script.
 
-If Live Server is unavailable, run `node scripts/serve.mjs` in the terminal, then open port 5500 from the Ports tab. Refresh the browser after edits when using this fallback; stop it with **Ctrl+C**. Run only one server on port 5500 at a time. The fallback also works locally with Node 22 or later. Serve over HTTP rather than opening `index.html` through `file://`.
+Fallback if Live Server is unavailable: run `node scripts/serve.mjs` in the
+terminal and open port 5500 from the Ports tab. Refresh manually after edits.
+Stop it with **Ctrl+C**. Run only one server on 5500 at a time. Serve over HTTP;
+opening `index.html` through `file://` will not persist data correctly.
 
-<!-- The .devcontainer folder installs Live Server automatically. If the right-click option
-     is missing, wait for the extension to finish installing (bottom-left status bar), or run
-     `python3 -m http.server 5500` in the terminal and open port 5500 from the Ports tab.
-     Edit these steps if your feature needs anything more. -->
+To see the write-failure path, add `?failSave` to the URL. That switch ships with
+the starter and makes every save throw, which is how E14 was tested.
 
 ## How It Works
 
-<!-- GitHub renders Mermaid natively inside a ```mermaid fence. -->
-
 ```mermaid
 flowchart TD
- A[Page opens] --> B[loadNotes: read and validate localStorage]
-  B --> C[renderNotes: draw current state]
-  D[User submits entry] --> E{Trimmed input is 1 to 200 characters?}
-  E -->|No| F[Show validation error and keep input]
-  E -->|Yes| G[Create proposed notes array]
-  G --> H{saveNotes: storage write succeeds?}
-  H -->|No| I[Show save error; keep input and current list]
-  H -->|Yes| J[Update in-memory notes]
-  J --> K[renderNotes: redraw list]
-  K --> L[Clear input and announce saved]
+  A[Page opens] --> B[loadContacts: read and validate localStorage]
+  B --> C[renderContactLog: draw list, badges, and follow-up count]
+  D[User submits a contact] --> E{findFieldProblem: all required fields present and under 200 chars?}
+  E -->|No| F[Show the error naming that field; keep every typed value]
+  E -->|Yes| G[Build proposed contactEntries array]
+  G --> H{saveContacts: storage write succeeds?}
+  H -->|No| I[Show save error; list and typed input both unchanged]
+  H -->|Yes| J[Update in-memory contactEntries]
+  J --> K[renderContactLog: redraw, recompute isOverdue, update count]
+  K --> L[Clear the form and announce the save]
 ```
 
-This diagram describes the starter's load-and-add flow. Update it to match your implementation. In `app.js`, `loadNotes` reads stored data, `saveNotes` attempts to persist a proposed state, and `renderNotes` draws the current state using `textContent` for user text. The submit handler validates input and updates the visible state only after a successful save. Delete also saves the proposed state before redrawing. A read failure shows a warning and starts with an empty in-memory list; it leaves the original storage unchanged until a successful new save replaces it.
+`loadContacts` reads stored data and rejects anything that is not an array of
+entries with the four expected string fields. `saveContacts` attempts to persist a
+proposed state and reports whether it succeeded. `renderContactLog` draws the
+current state, using `textContent` for every user-supplied value, and calls
+`isOverdue` on each entry to decide whether to attach a badge. `findFieldProblem`
+returns which field failed rather than a generic rejection, because E12 requires
+naming the missing field.
+
+The ordering is the load-bearing part. Nothing visible changes until storage has
+confirmed the write, which is why a failed save leaves both the list and the
+typed input untouched.
 
 ## Status
 
 | Area | State | Why |
 |------|-------|-----|
-| Save and display | [Works / Partial / Broken / Not tested] | [Link your verification evidence] |
-| Invalid input | [Works / Partial / Broken / Not tested] | [Link your verification evidence] |
-| Data survives reload / storage failure | [Works / Partial / Broken / Not tested] | [Link your verification evidence] |
-| Multi-user sync (starter limitation) | Deferred | Browser-local storage does not provide sync. Explain your own scope and decision in [ADR-001](context/ARCHITECTURE.md). |
-
+| Save and display | Works | E10 and E5 observed in the [verification table](context/FEATURES.md#verification), commit `015a50f` |
+| Invalid input | Works | E12 empty-field case observed; the 201-character boundary is recorded CANNOT TEST because it was not re-run in the Codespace |
+| Data survives reload | Works | E11 observed: three entries returned in order after a reload, with the overdue flag recomputed on load |
+| Storage write failure | Works | E14 observed under `?failSave`: error shown, list unchanged, all typed input preserved |
+| Follow-up threshold | Works | E13 observed at both 8 days (flagged) and 6 days (not flagged) |
+| Multi-user sync | Deferred | localStorage is per-browser and per-device, so the parent cannot see the log at all. Named as a defect, not a rough edge, in [ADR-001](context/ARCHITECTURE.md) |
 
 <details>
 <summary>Verification results (click to expand)</summary>
 
-Keep the full verification record in [FEATURES.md](context/FEATURES.md). Summarize it here or link directly to its Verification section; keep both consistent.
+The full record, including steps and expected results written before the run,
+lives in [FEATURES.md](context/FEATURES.md#verification). Summary:
 
-| Criterion / EARS statement | Steps and input | Expected result | Observed result | Status | Evidence / commit |
-|---|---|---|---|---|---|
-| [Your selected criterion ID] | [Reproducible procedure] | [State before testing] | [What actually happened] | [PASS / FAIL / CANNOT TEST / DEFERRED] | [Link] |
+| Criterion | Status |
+|---|---|
+| E10 — normal action, save and display | PASS |
+| E12 — empty required field named in the error | PASS |
+| E12 — 201-character boundary | CANNOT TEST (not re-run in the Codespace; next step recorded) |
+| E11 — entries survive a reload | PASS |
+| E14 — write failure preserves list and typed input | PASS |
+| E13 — flagged at 8 days | PASS |
+| E13 — not flagged at 6 days | PASS |
+| E5 — coach, date, and status visible without interaction | PASS |
 
-Cover a normal action, relevant invalid input, and persistence or failure. PASS requires observed results that match expectations; all-PASS is acceptable with evidence. For CANNOT TEST, state the limitation and next step. Identify unselected requirements separately; DEFERRED does not waive the required HW3 feature. A screenshot alone cannot establish reload or storage-failure behavior.
+Seven PASS, one CANNOT TEST. The nine service-level statements carried from HW2
+(E1 through E9, excluding E5) are classified as outside HW3 implementation scope
+in FEATURES.md, each with the reason its evidence is unavailable. They are scope
+decisions, not deferrals of required HW3 functionality.
 
 </details>
 
@@ -89,44 +122,106 @@ Cover a normal action, relevant invalid input, and persistence or failure. PASS 
 
 Read in this order:
 
-0. [`SCAFFOLD_MANIFEST.md`](SCAFFOLD_MANIFEST.md): explains what carries over from HW2 into HW3, along with a submission checklist
+0. [`SCAFFOLD_MANIFEST.md`](SCAFFOLD_MANIFEST.md): what carries over from HW2, and the submission checklist
 1. [`context/PROJECT.md`](context/PROJECT.md): the problem and its framing
 2. [`context/USERS.md`](context/USERS.md): who this is for
 3. [`context/FEATURES.md`](context/FEATURES.md): what it must do, and verification results
-4. [`context/ARCHITECTURE.md`](context/ARCHITECTURE.md): the gate and ADR-001
-5. [`context/STANDARDS.md`](context/STANDARDS.md): the rules this code follows
-6. [`context/CLAUDE.md`](context/CLAUDE.md): the same rules, for agents
+4. [`context/ARCHITECTURE.md`](context/ARCHITECTURE.md): hard constraints, the weighted gate, the sensitivity check, and ADR-001
+5. [`context/STANDARDS.md`](context/STANDARDS.md): the rules this code follows, the split test, and the colleague test
+6. [`context/CLAUDE.md`](context/CLAUDE.md): the same rules, written as agent instructions
 
-The scaffold has **eleven canonical files in `/context`: six active files above and five previews**: [STYLE.md](context/STYLE.md), [TOOLS.md](context/TOOLS.md), [SKILLS.md](context/SKILLS.md), [EVALS.md](context/EVALS.md), and [AGENTS.md](context/AGENTS.md). Keep the previews; verification stays in FEATURES.md until EVALS.md activates in Module 5.
+Five previews remain previews until their modules activate:
+[STYLE.md](context/STYLE.md), [TOOLS.md](context/TOOLS.md),
+[SKILLS.md](context/SKILLS.md), [EVALS.md](context/EVALS.md), and
+[AGENTS.md](context/AGENTS.md). Verification stays in FEATURES.md until EVALS.md
+activates in Module 5.
 
-Root README.md and the two instruction adapters—[CLAUDE.md](CLAUDE.md) and [.github/copilot-instructions.md](.github/copilot-instructions.md)—are additional files. Copy your HW2 USERS.md and FEATURES.md into `/context` and revise them using instructor feedback if available; otherwise record a peer criterion check and mark instructor feedback pending. Run `node scripts/check-scaffold.mjs` to check required file presence; this does not assess content quality.
+The two instruction adapters are root [CLAUDE.md](CLAUDE.md), which imports
+`@context/CLAUDE.md`, and
+[.github/copilot-instructions.md](.github/copilot-instructions.md).
 
 ## AI Use
 
-<!-- A Delegation Decision Record without the name. From HW5 this becomes a formal DDR. -->
+**Tool and task delegated:** Claude (Opus 5, via Claude Code) drafted the six
+active context documents, adapted the starter's single-string note model into the
+four-field contact entry model in `app.js`, `index.html`, and `styles.css`, and
+wrote the steps and expected results in the verification table before the run.
 
-**Tool and task delegated:** [Which parts a tool drafted: e.g. "Copilot drafted render() and the CSS."]
+**Why:** The documents are restatements of research and decisions I had already
+made in HW1 and HW2, so drafting them is transcription rather than thinking, and
+delegating it bought time for the parts that are not. The code adaptation was
+structural: the starter's load, save, render pattern already worked, and the task
+was to change what a record contains rather than how records are handled.
 
-**Why:** [The reason it made sense to delegate that part rather than write it.]
+**How it was checked:** I read `saveContacts` line by line until I could explain
+the ordering without looking at it, and that explanation is below. I ran every
+row of the verification table myself in the Codespace and recorded what I saw. I
+caught two formatting defects in the delegated edits, where two statements were
+placed on a single line in `index.html` and `app.js`, and an indentation block in
+`app.js` that sat at the wrong level; I fixed all three. I also rejected one
+proposed verification result: the 201-character boundary had been exercised on a
+local server rather than in the Codespace, so it is recorded as CANNOT TEST
+rather than PASS.
 
-**How it was checked:** [What you inspected, what you changed, what you caught. "Replaced innerHTML with textContent" is the kind of sentence that belongs here.]
+**Observed result / evidence:** Seven of eight checks passed with observed
+results recorded in
+[FEATURES.md](context/FEATURES.md#verification), all against commit `015a50f`.
+The one CANNOT TEST row states the limitation and the next step.
 
-**Observed result / evidence:** [What the checks actually showed; link the relevant verification row, code change, or other evidence. Do not invent a run.]
+**Instruction discovery and compliance:** GitHub Copilot was **not run**. The
+`.github/copilot-instructions.md` adapter is present and unmodified, but no
+Copilot session was started in this repository, so I have no discovery evidence
+to report and will not claim any. Claude Code was run from the repository root on
+a local clone, where root `CLAUDE.md` imports `@context/CLAUDE.md`; however, that
+file was authored during this assignment rather than discovered mid-task by a
+tool that had not seen it, so I am not presenting it as a discovery test either.
+In place of tool evidence I ran a manual standards review against
+[STANDARDS.md](context/STANDARDS.md): the three files keep HTML, CSS, and
+JavaScript separate with no inline styles and no script in the HTML beyond the
+loader tag (rule 2); every user-supplied value reaches the page through
+`textContent` and `innerHTML` appears nowhere in `app.js` (rule 5); no
+frameworks, CDN tags, or package installs were added (rule 7); every control has
+an associated label and both the error and status regions are announceable (rule
+6); and the commits name changed behavior rather than changed files (rule 4). The
+one rule I could not self-assess fairly is rule 3 on comments, since I did not
+write most of them.
 
-If no AI assistance was used, say so and describe your independent check. Full Delegation Decision Records begin at HW5; this lightweight record is sufficient here.
-
-**Instruction discovery and compliance:** [Record the tool and mode, which instruction adapter it discovered, and the reference or diagnostic evidence. Separately report whether one generated change followed the applicable standards. If no live AI tool is available, write “not run” and record a manual standards review.]
-
-**Actual hours on this assignment (optional):** [A number, if you choose to report it. The amount or omission does not affect points; the AI-use record does.]
+**Actual hours on this assignment (optional):** [REPLACE WITH A NUMBER]
 
 ## Explain, Change, Verify
 
-[Identify one function and explain its input, state changes, and output in your own words. Link a meaningful before/after code change, state its expected effect, and record the observed behavior and evidence. Explain why the change matters to your selected requirement. This paragraph is part of the existing README submission.]
+**The function.** This code is basically trying to save the contact information to
+the browser's local storage. If it saves correctly, it returns true and keeps
+going. If something goes wrong, it shows a message saying the entry could not be
+saved but is still there. It then returns false so the program knows the save
+didn't work. The order matters: if the form cleared and the list updated before
+the save, you would be looking at the new entry on the screen like it saved, but
+it actually didn't save to storage. The form would also already be cleared, so
+the information you typed could be lost. It would look like everything worked
+even though the save failed.
 
-<!-- Things this README could also do, if they earn their place:
-     - GitHub alerts:  > [!NOTE]  > [!WARNING]  > [!TIP]
-     - Task lists:     - [x] done   - [ ] not yet
-     - Emoji:          :rocket: :white_check_mark:
-     - Footnotes:      text[^1]  ...  [^1]: the note
-     - Embedded HTML tables, <kbd>Ctrl</kbd>+<kbd>S</kbd>, <sup>, <sub>
-     None are required. A README that reads well with none of them beats one that uses all of them. -->
+**The change.** I added a count of how many contacts are due for follow-up, shown
+above the list ([commit `015a50f`](../../commit/015a50f)). Before the change the
+page flagged individual overdue rows but never said how many there were, so
+answering "how far behind am I" meant scanning every entry. The new code filters
+the saved entries through the existing `isOverdue` check and writes a sentence
+into a slot in the HTML. I wrote it as three branches rather than one compressed
+line because `CLAUDE.md` tells an agent working here to prefer the obvious
+construction over the clever one, and that rule should apply to me too.
+
+**Expected effect:** with one entry past seven days awaiting a reply, a line
+reading "1 contact due for follow-up." appears above the list; with two, it reads
+"2 contacts due for follow-up."; with none, nothing is shown.
+
+**Observed result:** after saving an eight-day-old entry the line appeared
+reading "1 contact due for follow-up." Saving a six-day-old entry afterward left
+the count at one, confirming it counts the same entries the badge flags rather
+than counting rows. The count also re-rendered correctly after a page reload,
+which means it is computed from stored data on load rather than only at save
+time. Evidence is in the E13 rows of the [verification
+table](context/FEATURES.md#verification) and in the screenshot above.
+
+**Why it matters to the requirement.** E13 tells the athlete which coaches are
+overdue. It does not tell her how many, and the interview in USERS.md says the
+thing she actually loses track of is the backlog, not any single coach. The count
+turns a row-level flag into an answer to the question she is really asking.

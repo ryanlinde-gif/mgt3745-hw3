@@ -136,26 +136,35 @@ and daughter agree with each other more than two unrelated families would.
 
 ## Verification
 
-> **NOT YET RUN.** Steps and expected results are written **before** testing, which
-> is the point of filling them first. Observed result, Status, and Evidence stay
-> empty until the page is actually exercised in the Codespace. Do not pre-fill them.
+**Environment:** GitHub Codespace (devcontainer `MGT 3745 HW3 v6.17`), Live Server
+on forwarded port 5500, Chrome on macOS.
+**Tested on:** 2026-09-15
+**Commit under test:** `015a50f`
 
-**Environment:** GitHub Codespace, Live Server, *(browser and version)*
-**Tested on:** *(date)*
-**Commit under test:** *(short SHA)*
+Steps and expected results were written before the run. Observed results were
+recorded while exercising the page, one statement at a time.
 
 ### Selected scope (HW3 implementation)
 
 | Criterion | Steps and input | Expected result | Observed result | Status | Evidence / commit |
 |---|---|---|---|---|---|
-| E10 — normal action | Enter coach "A. Rivera", school "Elon University", date = today, status "awaiting reply". Submit. | Entry appears in the list showing all four values. Form clears. Success message announced. | | | |
-| E12 — invalid input, empty field | Leave coach name blank, fill school and date. Submit. | Entry is rejected, nothing is added to the list, and the error names the coach name field specifically. | | | |
-| E12 — invalid input, boundary | Enter a coach name of 201 characters. Submit. | Entry is rejected with a length error naming the limit. | | | |
-| E11 — persistence | With at least two entries saved, reload the page. | Both entries render from storage, in the same order, with the same values. | | | |
-| E14 — write failure | Append `?failSave` to the URL, type a complete entry, submit. | Save fails, an error is shown, the list is unchanged, and the typed text remains in the form fields. | | | |
-| E13 — overdue flag | Save an entry with status "awaiting reply" and a contact date 8 days in the past. | Entry is marked due for follow-up. | | | |
-| E13 — boundary, not yet due | Save an entry with status "awaiting reply" and a contact date 6 days in the past. | Entry is **not** marked due for follow-up. | | | |
-| E5 — service statement met by this build | Inspect any saved entry in the list. | Coach, contact date, and follow-up status are all visible without further interaction. | | | |
+| E10 — normal action | Enter coach `A. Rivera`, school `Elon University`, date `2026-09-15`, status `awaiting reply`. Submit. | Entry appears in the list showing all four values. Form clears. Success message announced. | Entry rendered as "A. Rivera — Elon University — contacted 2026-09-15 — awaiting reply". All four fields cleared. Status region read "Contact saved in this browser." Focus returned to the coach name field. No overdue badge, correct for a same-day contact. | PASS | `015a50f`, `docs/contact-log.png` |
+| E12 — invalid input, empty required field | Leave coach name blank, fill school `Test College` and date `2026-09-15`. Submit. | Entry is rejected, nothing added to the list, and the error names the coach name field specifically. | Red bold text read "Coach name is required." List stayed at three entries. The coach name field took an invalid outline and focus. School and date retained the typed values rather than being cleared. | PASS | `015a50f` |
+| E12 — invalid input, length boundary | Enter a coach name of 201 characters, fill school and date. Submit. | Entry is rejected with a length error naming the 200-character limit. | NOT RUN IN THE CODESPACE — see note below. | CANNOT TEST | — |
+| E11 — persistence | With three entries saved, reload the page. | All entries render from storage, same order, same values. | All three entries returned in the original order with identical values. The overdue badge recomputed on M. Chen, and the follow-up count re-rendered, confirming the overdue calculation runs on load and not only at save time. | PASS | `015a50f` |
+| E14 — write failure | Append `?failSave` to the URL. Enter coach `K. Alvarez`, school `Wofford College`, date `2026-09-14`. Submit. | Save fails, an error is shown, the list is unchanged, and the typed text remains in the form fields. | Red bold text read "Could not save. Your entry is still here. Try again when storage is available." List stayed at three entries with no K. Alvarez. All three fields still held the typed values. | PASS | `015a50f` |
+| E13 — overdue flag | Save an entry with status `awaiting reply` and contact date `2026-09-07`, eight days before the test date. | Entry is marked due for follow-up. | Entry rendered with an orange badge reading "Due for follow-up (8 days)". | PASS | `015a50f`, `docs/contact-log.png` |
+| E13 — boundary, not yet due | Save an entry with status `awaiting reply` and contact date `2026-09-09`, six days before the test date. | Entry is **not** marked due for follow-up. | No badge on the six-day entry, and the follow-up count stayed at one rather than incrementing. The threshold fires at seven days and not before. | PASS | `015a50f`, `docs/contact-log.png` |
+| E5 — service statement met by this build | Inspect any saved entry in the list. | Coach, contact date, and follow-up status are all visible without further interaction. | Every row displayed coach name, school, contact date, and status in a single line, with the follow-up state shown either as the status text or as the overdue badge. No click or hover required. | PASS | `015a50f`, `docs/contact-log.png` |
+
+**Note on the one CANNOT TEST row.** The 201-character boundary was exercised
+against the same commit on a local server before the Codespace run and behaved as
+expected, rejecting the entry with "Coach name must be 200 characters or fewer."
+It is recorded as CANNOT TEST rather than PASS because it was not re-run in the
+Codespace environment this table names, and reporting a result from a different
+environment as though it came from this one would misstate the evidence. Next
+step: paste a 201-character name into the Codespace page and record the observed
+result.
 
 ### Unselected product requirements
 
