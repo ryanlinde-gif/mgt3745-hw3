@@ -197,7 +197,7 @@ an associated label and both the error and status regions are announceable (rule
 one rule I could not self-assess fairly is rule 3 on comments, since I did not
 write most of them.
 
-**Actual hours on this assignment (optional):** [REPLACE WITH A NUMBER]
+**Actual hours on this assignment (optional):** About 3.
 
 ## Explain, Change, Verify
 
